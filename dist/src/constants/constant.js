@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BUSDCE_ADDRESS = exports.SENDIO_BASE_URL = exports.WASENDER_API_KEY = exports.PassWaordHash = exports.connectionString = void 0;
+require("dotenv/config");
+const connectionString = `${process.env.DATABASE_URL}`;
+exports.connectionString = connectionString;
+const PassWaordHash = `${process.env.PASSWORDHASH}`;
+exports.PassWaordHash = PassWaordHash;
+const WASENDER_API_KEY = `${process.env.WASENDER_API_KEY}`;
+exports.WASENDER_API_KEY = WASENDER_API_KEY;
+const SENDIO_BASE_URL = `${process.env.SENDIO_BASE_URL}`;
+exports.SENDIO_BASE_URL = SENDIO_BASE_URL;
+const BUSDCE_ADDRESS = "0xc01efAaF7C5C61bEbFAeb358E1161b537b8bC0e0";
+exports.BUSDCE_ADDRESS = BUSDCE_ADDRESS;
