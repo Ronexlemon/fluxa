@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "nodemon src/server.ts",
     "build": "tsc",
-    "postbuild":"npx prisma migrate deploy",
+    "postbuild": "npx prisma migrate deploy",
     "start": "node ./dist/server.js",
     "prisma-generate": " npx prisma generate",
-    "prisma-migrate":"npx prisma migrate dev",
-    "prisma-deploy":"npx prisma migrate deploy",
+    "prisma-migrate": "npx prisma migrate dev",
+    "prisma-deploy": "npx prisma migrate deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -36,6 +36,7 @@
     "express-async-handler": "^1.2.0",
     "morgan": "^1.10.1",
     "pg": "^8.17.1",
+    "tslib": "^2.8.1",
     "viem": "^2.44.4"
   }
 }
