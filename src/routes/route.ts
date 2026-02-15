@@ -10,6 +10,6 @@ const router = Router();
 router.use("/account", accountWallets);
 router.use("/x402", x402Prot);
 router.use("/endpoint",webhook)
-router.use("/mcp",Mcpagent)
+router.use("/agents",Mcpagent)
 
 export default router;

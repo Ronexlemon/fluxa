@@ -3,7 +3,7 @@ import { AgentMcpcontroller } from "../controller/agent_controller";
 
 const router = Router();
 
-router.post("/agents", AgentMcpcontroller);
+router.post("/mcp", AgentMcpcontroller);
 
 
 export default router;
