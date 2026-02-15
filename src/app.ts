@@ -24,17 +24,14 @@ app.use((_req: Request, res: Response) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// /* ---------- Global Error Handler ---------- */
-// app.use(
-//   (
-//     err: Error,
-//     _req: Request,
-//     res: Response,
-//     _next: NextFunction
-//   ) => {
-//     console.error(err);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// );
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error("Server error:", err);
+  res.status(500).json({
+    error: {
+      code: -32603,
+      message: err.message || "Internal Server Error"
+    }
+  });
+});
 
 export default app;
