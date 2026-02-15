@@ -5,6 +5,10 @@ import { makePayment } from "../service/payment"; // Assuming this handles the s
 const AgentMcpcontroller = asyncHandler(
   async (req: Request, res: Response) => {
     const { method, params, id } = req.body;
+if (!method || !id) {
+   res.status(400).json({ error: "Missing required fields: method or id" });
+   return
+}
 
     // 1. Tool Discovery: Tells ChatGPT what this agent can do
     if (method === "list_tools") {
