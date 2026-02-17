@@ -146,3 +146,24 @@ const res =  fetch(endpoint, {
     txHash: "Submitted"
   };
 };
+
+
+
+
+
+export const agentDetails = async () => {
+  agent.agentId = 25n as any;
+
+  const info: any = await agent.getInfo(agent.agentId as string);
+
+  return {
+    status: true,
+    agent: {
+      id: agent.agentId as string,
+      address: info.add,
+      owner: info.owner,
+    },
+  };
+};
+
+

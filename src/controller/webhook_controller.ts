@@ -2,7 +2,7 @@ import AsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import { WasenderClient } from "../lib/whatsapp";
 import { WASENDER_API_KEY } from "../constants/constant";
-import { callPaymentAPI, createAccountViaApi, executePayBill, getAccountBalance, getAccountDetails } from "../lib/apiclients";
+import { agentDetails, callPaymentAPI, createAccountViaApi, executePayBill, getAccountBalance, getAccountDetails } from "../lib/apiclients";
 import { getBalance } from "../lib/web3";
 
 const wasender = new WasenderClient(WASENDER_API_KEY);
@@ -38,6 +38,7 @@ What would you like to do?
 2️⃣ Check Balance  
 3️⃣ Delete Wallet  
 4️⃣ Pay Bill  
+5️⃣ Check Agent Details
 
 📩 *Reply with a number*  
 Example: 1`
@@ -107,7 +108,7 @@ Send crypto using this format:
 📝 *Example:*  
 /0xabc123...,/10
 
-💡 Amount is in USDCe`
+💡 Amount is in USDC`
       });
     }
 
@@ -119,7 +120,7 @@ Send crypto using this format:
   message:
 `💰 *Your Wallet Balance*
 
-🔹 ${result} USDCe
+🔹 ${result} USDC
 
 Type /help to continue`
       });
@@ -178,13 +179,15 @@ Example:
   await wasender.sendMessageFromLid({
     lid,
     message:
-`✅ *Bill Paid Successfully*
+`💳 *Bill Payment Update*
 
-💰 Amount: ${amount} USDC  
-🏦 To: ${billNumber}  
-   Status:"Pending"
-📝 Reason: ${reason}  
-🔗 Tx Hash: ${result.txHash}`
+Amount: *${amount} USDC*  
+Bill Number: ${billNumber}  
+Reason: ${reason}  
+
+Status: ⏳ *Processing*  
+You’ll be notified once confirmed.
+`
   });
 
    res.status(200).json({ status: "ok" });
@@ -243,28 +246,44 @@ Use this format:
   await wasender.sendMessageFromLid({
     lid,
     message:
-`💳 *PAY BILL (Fluxa Agent Assisted)*
+`💳 *Pay a Bill (Fluxa Agent Assisted)*
 
-Send bill payment in this format:
+Send your bill payment in this format:
 
-/paybill,amount,paybillNumber,/reason
+👉 /paybill,amount,billNumber,reason
 
-📝 Example:
- /paybill,50,808989...,Electricity bill
+📝 *Example:*
+/paybill,50,808989,Electricity bill
 
-📌 Supported:
-• Rent
-• Electricity
-• Water
-• Internet
-• Subscriptions
+📌 *Supported Bills:*
+• Rent  
+• Electricity  
+• Water  
+• Internet  
+• Subscriptions  
 
 Type /help to go back`
+
   });
 
   res.status(200).json({ status: "ok" });
   return;
+} else if (incomingMessage === "5") {
+  const result = await agentDetails();
+
+  await wasender.sendMessageFromLid({
+    lid,
+    message: 
+`🤖 *Agent Details*
+
+🆔 ID: ${result.agent.id}
+📡 Address: ${result.agent.address}
+👤 Owner: ${result.agent.owner}
+
+Type /help to continue`
+  });
 }
+
 
     // 🔹 Unknown command
     else {
