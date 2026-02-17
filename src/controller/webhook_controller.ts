@@ -278,7 +278,7 @@ Type /help to go back`
 
 🆔 ID: ${result.agent.id}
 📡 Address: ${result.agent.address}
-👤 Owner: ${result.agent.owner}
+👤 Name: ${result.agent.name}
 
 Type /help to continue`
   });
