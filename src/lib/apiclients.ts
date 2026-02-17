@@ -103,7 +103,7 @@ export const executePayBill = async (
   const metadatas = await agent.getAgentMetadata()
   console.log("The metadata",metadatas)
   const res = await fetch(
-    `${metadatas.services?.find((s:any) => s.name === 'MCP')?.endpoint}`,
+    `${metadatas.services?.find((s:any) => s.name === 'web')?.endpoint}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },

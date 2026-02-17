@@ -207,7 +207,7 @@ async function run() {
 The Id 19n
     * 
     */
-  agent.agentId = 19n as any; 
+  agent.agentId = 25n as any; 
   const addre = await agent.getInfo(agent.agentId as string)
   const metadatas = await agent.getAgentMetadata()
   console.log("The metadata",metadatas)

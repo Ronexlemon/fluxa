@@ -247,10 +247,10 @@ Use this format:
 
 Send bill payment in this format:
 
-/paybill,/amount,/recipientAddress,/reason
+/paybill,amount,paybillNumber,/reason
 
 📝 Example:
- /paybill,50,0xBillerAddress123...,Electricity bill
+ /paybill,50,808989...,Electricity bill
 
 📌 Supported:
 • Rent
