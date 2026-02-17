@@ -123,15 +123,10 @@ const adapter = new EthersAdapter(provider, signer);
     console.log("🛠 Address Agent on-chain...");
     const CID = "bafkreiajlac5sd7dzo7li3c6jzy4dv4rqpc7d3cpxbiqn557addkrngley";
     const add = await this.sdk.getAddress()
-    const b = await this.sdk.identity.getOwner(BigInt(id))
-    const c = await this.sdk.identity.getTokenURI(BigInt(id))
-     const dt = await this.sdk.identity.getMetadata(BigInt(id),CID)
-   // const d = await this.sdk.reputation.
-     console.log(`✅ owner!  Agent Address : ${b}`);
-     console.log(`✅ TokenUrl!  Agent Address : ${c}`);
-    console.log(`✅ Registered!  Agent Address : ${add}`);
-      console.log(`✅ Agent Metadata : ${dt}`);
-    return add;
+    const owner = await this.sdk.identity.getOwner(BigInt(id))
+    const URI = await this.sdk.identity.getTokenURI(BigInt(id))
+     
+    return {add,owner,URI};
   }
 
   async  getAgentMetadata() {

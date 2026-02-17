@@ -119,7 +119,6 @@ export const executePayBill = async (
   console.log("PAY BILL EXEC:", { phoneNumber, amount, recipientAddress, reason });
 
   agent.agentId = 25n as any; 
-  const addre = await agent.getInfo(agent.agentId as string)
   const metadatas = await agent.getAgentMetadata()
   const webService = metadatas.services?.find((s: any) => s.name === "web");
 const endpoint = webService?.endpoint;
