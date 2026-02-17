@@ -12,5 +12,6 @@ router.use("/account", accountWallets);
 router.use("/x402", x402Prot);
 router.use("/endpoint",webhook)
 router.use("/agents",AgentMcpcontroller)
+router.use("/payment",Mcpagent)
 
 export default router;

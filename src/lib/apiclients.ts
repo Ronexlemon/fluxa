@@ -1,4 +1,5 @@
-import { SENDIO_BASE_URL } from "../constants/constant";
+import { PRIVATE_KEY, RPC_URL, SENDIO_BASE_URL } from "../constants/constant";
+import { AutonomousBillAgent } from "./agent";
 import { getBalance } from "./web3";
 
 export const createAccountViaApi = async (phoneNumber: string) => {
@@ -85,3 +86,36 @@ export async function callPaymentAPI(
 
   return JSON.parse(text);
 }
+
+
+const agent = new AutonomousBillAgent(RPC_URL,PRIVATE_KEY as `0x${string}`);
+
+export const executePayBill = async (
+  phoneNumber: string,
+  amount: string,
+  recipientAddress: string,
+  reason?: string
+) => {
+  console.log("PAY BILL EXEC:", { phoneNumber, amount, recipientAddress, reason });
+
+  agent.agentId = 19n as any; 
+  const addre = await agent.getInfo(agent.agentId as string)
+  const metadatas = await agent.getAgentMetadata()
+  console.log("The metadata",metadatas)
+  const res = await fetch(
+    `${metadatas.services?.find((s:any) => s.name === 'MCP')?.endpoint}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phoneNumber,
+        Amount: amount
+      }),
+    }
+  );
+
+  return {
+    status: true,
+    txHash: "0xFAKE_HASH_FOR_NOW"
+  };
+};

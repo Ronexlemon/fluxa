@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import { makePayment } from "../service/payment"; // Assuming this handles the stablecoin transfer
-
+import { getXPaymentHeader, makePayment } from "../service/payment"; // Assuming this handles the stablecoin transfer
+interface SettlementConfig {
+  req: Request;
+  price: string;
+  scheme?: "exact" | "upto";
+  customResourceUrl?: string;
+}
 const AgentMcpcontroller = asyncHandler(
   async (req: Request, res: Response) => {
     const { method, params, id } = req.body;
@@ -65,4 +70,103 @@ if (!method || !id) {
   }
 );
 
-export { AgentMcpcontroller };
+import { settlePayment, facilitator,verifyPayment } from "thirdweb/x402";
+import { createThirdwebClient } from "thirdweb";
+import { avalanche } from "thirdweb/chains";
+import { celo } from "viem/chains";
+
+import { getWalletByPhoneNumber } from "../service/wallet/wallet";
+import { CeloX402Payment,CeloPaymentService } from "../lib/celox402";
+import { decodeSignEncode } from "../lib/sign";
+import { THIRDWEB_SECRET_KEY } from "../constants/constant";
+
+
+const client = createThirdwebClient({
+ secretKey: THIRDWEB_SECRET_KEY as string,
+});
+
+const thirdwebFacilitator = facilitator({
+  client,
+  serverWalletAddress: "0xd0Cc0Af5fD30392614560f406C67Efc4D5339c25",
+});
+
+
+
+const payment = new CeloX402Payment({
+  thirdwebSecretKey: THIRDWEB_SECRET_KEY  as string,
+ serverWalletAddress: "0xd0Cc0Af5fD30392614560f406C67Efc4D5339c25",
+  isTestnet: true, 
+});
+
+
+const settlePaymentController = asyncHandler(
+  async (req: Request, res: Response) => {
+const { phoneNumber,Amount } = req.body ||  {};
+
+    if (!phoneNumber) {
+      res.status(402).json({
+        status: false,
+        message: "phoneNumber is required",
+      });
+      return;
+    }
+    
+
+    const walletdetails = await getWalletByPhoneNumber(phoneNumber)
+    
+ const API_URL = 'http://localhost:3000/api/premium-content';
+    const signature = await payment.generateSignature({
+     privateKey: walletdetails.privateKey,
+    payTo: "0x65e28c9c4ef1a756d8df1c507b7a84efcf606fd4",
+    amount: Amount,
+    resourceUrl: API_URL,
+  });
+  
+ console.log('Header:', signature.headerName);
+ console.log('Value:', signature.headerValue.substring(0, 50) + '...');
+
+ const mockReq = {
+        ...req,
+        headers: {
+          ...req.headers,
+          [signature.headerName.toLowerCase()]: signature.headerValue,
+        },
+        protocol: req.protocol,
+        get: (header: string) => req.get(header),
+        originalUrl: '/api/premium-content',
+        method: 'POST',
+      } as Request;
+ const xPayment =
+        (mockReq.headers["payment-signature"] as string) ||
+        (mockReq.headers["x-payment"] as string);
+
+        const paymentdata = await decodeSignEncode(xPayment,walletdetails.privateKey)
+        console.log("The PaymentData",paymentdata)
+        const v = await thirdwebFacilitator.settle({
+    payload: paymentdata.payload,       
+    scheme: paymentdata.scheme,
+    network: paymentdata.network,
+    x402Version: paymentdata.x402Version,
+  },
+  {
+    scheme: paymentdata.accepted.scheme,
+    network: paymentdata.accepted.network,
+    maxAmountRequired: paymentdata.accepted.amount,  
+    payTo: paymentdata.accepted.payTo,
+    asset: paymentdata.accepted.asset,
+    resource: paymentdata.accepted.resource,
+    description: '',
+    mimeType: '',
+    maxTimeoutSeconds: 300,
+    extra: {
+      name: 'USDC',   
+      version: '2',       
+      verifyingContract: paymentdata.accepted.asset,
+    }
+  })
+        console.log("The Value of v",v)
+        res.status(200).json({message:"Transaction complete",data:v})
+
+  }
+);
+export { AgentMcpcontroller,settlePaymentController };

@@ -7,7 +7,7 @@ interface PaymentRequirements{
     amount:string,
     description_order_Number?:string
 }
-interface PaymentHeader{
+export interface PaymentHeader{
     to:string,
     value:string,
     private_key:string

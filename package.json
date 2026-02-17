@@ -2,15 +2,16 @@
   "name": "fluxa",
   "version": "1.0.0",
   "main": "dist/server.js",
-   "scripts": {
+  "scripts": {
     "dev": "nodemon src/server.ts",
     "build": "tsc",
-    "postbuild":"npx prisma migrate deploy",
+    "postbuild": "npx prisma migrate deploy",
     "start": "node ./dist/server.js",
     "prisma-generate": " npx prisma generate",
-    "prisma-migrate":"npx prisma migrate dev",
-    "prisma-deploy":"npx prisma migrate deploy",
-    "test": "echo \"Error: no test specified\" && exit 1"},
+    "prisma-migrate": "npx prisma migrate dev",
+    "prisma-deploy": "npx prisma migrate deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -29,13 +30,16 @@
     "@crypto.com/facilitator-client": "^1.0.4",
     "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.2.0",
+    "axios": "^1.13.5",
     "cors": "^2.8.5",
+    "erc-8004-js": "^2.0.1",
     "ethers": "^6.16.0",
     "express": "^5.2.1",
     "express-async-handler": "^1.2.0",
     "morgan": "^1.10.1",
     "pg": "^8.17.1",
+    "thirdweb": "^5.118.2",
     "tslib": "^2.8.1",
-    "viem": "^2.44.4"
+    "viem": "^2.46.1"
   }
 }

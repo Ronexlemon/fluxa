@@ -1,5 +1,5 @@
 import { Address } from "viem";
-import { PaymentProcessor } from "../lib/x402";
+import { PaymentHeader, PaymentProcessor } from "../lib/x402";
 
 
 
@@ -25,4 +25,9 @@ console.log(result);
 return result
 }
 
-export {makePayment}
+const getXPaymentHeader = async(details:PaymentHeader)=>{
+  const result = await processor.requestHeader(details)
+  return result
+}
+
+export {makePayment,getXPaymentHeader}

@@ -2,7 +2,7 @@ import AsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import { WasenderClient } from "../lib/whatsapp";
 import { WASENDER_API_KEY } from "../constants/constant";
-import { callPaymentAPI, createAccountViaApi, getAccountBalance, getAccountDetails } from "../lib/apiclients";
+import { callPaymentAPI, createAccountViaApi, executePayBill, getAccountBalance, getAccountDetails } from "../lib/apiclients";
 import { getBalance } from "../lib/web3";
 
 const wasender = new WasenderClient(WASENDER_API_KEY);
@@ -37,6 +37,7 @@ What would you like to do?
 1️⃣ Send Funds  
 2️⃣ Check Balance  
 3️⃣ Delete Wallet  
+4️⃣ Pay Bill  
 
 📩 *Reply with a number*  
 Example: 1`
@@ -138,7 +139,58 @@ To confirm, reply with:
 
 To cancel, type /help`
       });
-    }else if (incomingMessage.includes("/")) {
+    }else if (incomingMessage.startsWith("/paybill")) {
+  const parts = incomingMessage.split(",");
+
+  const amount = parts[1];
+  const billNumber = parts[2];
+  const reason = parts[3] || "Bill Payment";
+
+  if (!amount || !billNumber) {
+    await wasender.sendMessageFromLid({
+      lid,
+      message:
+`❌ Invalid PayBill format
+
+Use:
+/paybill,/amount,/billNumber,/reason
+
+Example:
+/paybill,50,838383...,Electricity`
+    });
+
+     res.status(200).json({ status: "ok" });
+     return
+  }
+
+  const result = await executePayBill(phoneNumber, amount, billNumber, reason);
+
+  if (!result.status) {
+    await wasender.sendMessageFromLid({
+      lid,
+      message: `❌ PayBill Failed`
+    });
+
+     res.status(200).json({ status: "ok" });
+     return
+  }
+
+  await wasender.sendMessageFromLid({
+    lid,
+    message:
+`✅ *Bill Paid Successfully*
+
+💰 Amount: ${amount} USDC  
+🏦 To: ${billNumber}  
+   Status:"Pending"
+📝 Reason: ${reason}  
+🔗 Tx Hash: ${result.txHash}`
+  });
+
+   res.status(200).json({ status: "ok" });
+   return
+}
+    else if (incomingMessage.includes("/")) {
     const [toAddress, amount] = incomingMessage.split(",");
 
     if (!toAddress || !amount) {
@@ -187,7 +239,32 @@ Use this format:
 
     res.status(200).json({ status: "ok" });
     return;
-  }
+  }else if (incomingMessage === "4") {
+  await wasender.sendMessageFromLid({
+    lid,
+    message:
+`💳 *PAY BILL (Fluxa Agent Assisted)*
+
+Send bill payment in this format:
+
+/paybill,/amount,/recipientAddress,/reason
+
+📝 Example:
+ /paybill,50,0xBillerAddress123...,Electricity bill
+
+📌 Supported:
+• Rent
+• Electricity
+• Water
+• Internet
+• Subscriptions
+
+Type /help to go back`
+  });
+
+  res.status(200).json({ status: "ok" });
+  return;
+}
 
     // 🔹 Unknown command
     else {
