@@ -121,7 +121,7 @@ const adapter = new EthersAdapter(provider, signer);
 
    async getInfo(id: string) {
     console.log("🛠 Address Agent on-chain...");
-    const CID = "bafkreih7xu2bz5rsi7czikffbw7flot7zxhg327hcjxj3ou4iunfyh35ae";
+    const CID = "bafkreiajlac5sd7dzo7li3c6jzy4dv4rqpc7d3cpxbiqn557addkrngley";
     const add = await this.sdk.getAddress()
     const b = await this.sdk.identity.getOwner(BigInt(id))
     const c = await this.sdk.identity.getTokenURI(BigInt(id))
@@ -135,7 +135,7 @@ const adapter = new EthersAdapter(provider, signer);
   }
 
   async  getAgentMetadata() {
-  const CID = "bafkreidl6hpbwoc2n7pf4ivedauee75rlzpeauxzyxolny2zctswnlaff4";
+  const CID = "bafkreiajlac5sd7dzo7li3c6jzy4dv4rqpc7d3cpxbiqn557addkrngley";
   const url = `https://gateway.pinata.cloud/ipfs/${CID}`;
 
   try {

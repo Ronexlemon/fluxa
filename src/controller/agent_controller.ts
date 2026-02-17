@@ -101,7 +101,7 @@ const payment = new CeloX402Payment({
 
 const settlePaymentController = asyncHandler(
   async (req: Request, res: Response) => {
-const { phoneNumber,Amount } = req.body ||  {};
+const { phoneNumber,amount } = req.body ||  {};
 
     if (!phoneNumber) {
       res.status(402).json({
@@ -118,7 +118,7 @@ const { phoneNumber,Amount } = req.body ||  {};
     const signature = await payment.generateSignature({
      privateKey: walletdetails.privateKey,
     payTo: "0x65e28c9c4ef1a756d8df1c507b7a84efcf606fd4",
-    amount: Amount,
+    amount: amount,
     resourceUrl: API_URL,
   });
   

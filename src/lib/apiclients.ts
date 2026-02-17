@@ -98,24 +98,31 @@ export const executePayBill = async (
 ) => {
   console.log("PAY BILL EXEC:", { phoneNumber, amount, recipientAddress, reason });
 
-  agent.agentId = 19n as any; 
+  agent.agentId = 25n as any; 
   const addre = await agent.getInfo(agent.agentId as string)
   const metadatas = await agent.getAgentMetadata()
-  console.log("The metadata",metadatas)
-  const res = await fetch(
-    `${metadatas.services?.find((s:any) => s.name === 'web')?.endpoint}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        phoneNumber,
-        Amount: amount
-      }),
-    }
-  );
+  const webService = metadatas.services?.find((s: any) => s.name === "web");
+const endpoint = webService?.endpoint;
+
+if (!endpoint) {
+  throw new Error("Web service endpoint not found");
+}
+
+
+const res =  fetch(endpoint, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    phoneNumber,
+    amount,
+  }),
+});
+
 
   return {
     status: true,
-    txHash: "0xFAKE_HASH_FOR_NOW"
+    txHash: "Submitted"
   };
 };
