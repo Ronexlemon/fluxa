@@ -159,8 +159,8 @@ export const agentDetails = async () => {
     status: true,
     agent: {
       id: agent.agentId as string,
+      name:"Fluxa",
       address: info.add,
-      owner: info.owner,
     },
   };
 };

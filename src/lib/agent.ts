@@ -125,7 +125,6 @@ const adapter = new EthersAdapter(provider, signer);
     const add = await this.sdk.getAddress()
     const owner = await this.sdk.identity.getOwner(BigInt(id))
     const URI = await this.sdk.identity.getTokenURI(BigInt(id))
-     
     return {add,owner,URI};
   }
 
